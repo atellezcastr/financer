@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Create{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post" id="transactionForm">
+    <input type="radio" id="expense_transaction" value="0" name="type_of_transaction" required>
+    <label for="expense_transaction">Expense</label>
+    <input type="radio" id="income_transaction" value="1" name="type_of_transaction" required>
+    <label for="income_transaction">Income</label>
+
+    <label for="title">Title</label>
+    <input name="title" id="title" value="{{ request.form['title'] }}" required>
+    
+    <label for="amount">Amount</label>
+    <input name="amount" id="amount" type="number" step="0.01" min="0" placeholder="e.g. 2.75" value="{{ request.form['amount'] }}" required>
+
+    <label for="comments">Comments</label>
+    <textarea name="comments" id="comments">{{ request.form['comments'] }}</textarea>
+
+    <label for="description_of_transaction">Transaction Type</label>
+    <select name="description_of_transaction" id="description_of_transaction">
+      <!-- Options will be dynamically added here -->
+    </select>
+    <input type="submit" value="Save">
+  </form>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Python options
+      var toes = {{ toes | tojson }};
+      var tois = {{ tois | tojson }};
+      var tots = {{ tots | tojson }};
+      
+      // Function to update options based on the selected radio button
+      function updateOptions() {
+        var selectedRadio = document.querySelector('input[name="type_of_transaction"]:checked');
+        if (selectedRadio) {
+          var selectedType = selectedRadio.value;
+          var dropdown = document.getElementById('description_of_transaction');
+          dropdown.innerHTML = ""; // Clear existing options
+  
+          // Add options based on the selected type
+          var options = tots[selectedType];
+          var count = 0;
+          for (var key in options) {
+            //TODO Maybe top 5? Priority order?
+            // if (options.hasOwnProperty(key) && count < 5) {
+              dropdown.options.add(new Option(options[key], key));
+              // count++;
+            // }
+          }
+        }
+      }
+  
+      // Attach the updateOptions function to the change event of radio buttons
+      var radioButtons = document.querySelectorAll('input[name="type_of_transaction"]');
+      radioButtons.forEach(function(radio) {
+        radio.addEventListener('change', updateOptions);
+      });
+  
+      // Initial options update on page load
+      updateOptions();
+    });
+  </script>
+{% endblock %}

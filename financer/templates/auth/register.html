@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Register{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<form method="post">
+    <label for="username">Username</label>
+    <input name="username" id="username" required>
+    <label for="password">Password</label>
+    <input type="password" name="password" id="password" required>
+    <input type="submit" value="Register">
+
+    <label for="name_of_account">Name for the account</label>
+    <input name="name_of_account" id="name_of_account" >
+
+    <input type="radio" id="chequing" value="0" name="type_of_account" checked>
+    <label for="chequing">Chequing</label>
+    <input type="radio" id="savings" value="1" name="type_of_account">
+    <label for="savings">Savings</label>
+    <input type="radio" id="joint" value="2" name="type_of_account">
+    <label for="joint">Joint</label>
+
+    <label for="initial_amount">Initial Amount</label>
+    <input for="initial_amount" name="initial_amount" id="initial_amount" type="number" step="0.01" placeholder="e.g. 2,75" >
+</form>
+{% endblock %}
