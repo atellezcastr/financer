@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <div id="accounts_header" style="display: flex; align-items: center;">
+    <h1>{% block title %}Overview{% endblock %}</h1>
+    {% if g.user %}
+      <h3> Your accounts:</h3>
+      {% for account in accounts %}
+      <h4>{{account['type_of_account']}}</h4>
+      <h4>{{account['name_of_account']}}</h4>
+      <h4>{{account['balance']}}</h4>
+      {% endfor %}
+    {% endif %}
+  </div>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('overview.create') }}">New</a>
+  {% else %}
+    <h1> You are not registered</h1>
+
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% for post in posts %}
+    <h1>{{ post['title']}}</h1>
+    <h1>{{ post['amount']}}</h1>
+    {% endfor %}
+{% endblock %}
