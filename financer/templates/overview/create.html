@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Create{% endblock %}</h1>
+  <h1>{% block title %}Add Transaction{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -24,6 +24,13 @@
     <select name="description_of_transaction" id="description_of_transaction">
       <!-- Options will be dynamically added here -->
     </select>
+
+    <label for="accounts">This transaction will affect the following account: </label>
+    <select name="accounts" id="accounts">
+      {% for account in accounts %}
+      <option> {{account['name_of_account']}}</option>
+      {% endfor %}
+    </select>
     <input type="submit" value="Save">
   </form>
   <script>
@@ -32,7 +39,7 @@
       var toes = {{ toes | tojson }};
       var tois = {{ tois | tojson }};
       var tots = {{ tots | tojson }};
-      
+      var accounts = {{ accounts | tojson }};
       // Function to update options based on the selected radio button
       function updateOptions() {
         var selectedRadio = document.querySelector('input[name="type_of_transaction"]:checked');
