@@ -121,3 +121,30 @@ input[type=submit] {
     align-self: start;
     min-width: 10em;
 }
+div.accounts_header{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+div.accounts{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+div.post-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    border:1px solid;
+    border-radius: 5px;
+    margin: 10px;
+}
+div.post-container.expense {
+    border-color: red;
+    background-color: rgba(255, 0, 0, 0.2);
+}
+div.post-container.income {
+    border-color: #5386E4;
+    background-color: rgba(0, 0, 255, 0.1);
+}
