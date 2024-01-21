@@ -1,15 +1,23 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <div id="accounts_header" style="display: flex; align-items: center;">
+  <div class="accounts_header">
     <h1>{% block title %}Overview{% endblock %}</h1>
     {% if g.user %}
-      <h3> Your accounts:</h3>
-      {% for account in accounts %}
-      <h4>{{account['type_of_account']}}</h4>
-      <h4>{{account['name_of_account']}}</h4>
-      <h4>{{account['balance']}}</h4>
-      {% endfor %}
+    <div class="accounts">
+      <h3>Your accounts: </h3>
+      <select name="account_selection" class="accounts_selector">
+        {% for type_of_account in accounts %}
+          <optgroup label="{{ type_of_account }}">
+            <option>test1</option>
+            {% for account in accounts['type_of_account'] %}
+            <!-- <option value="{{account['name_of_account']}}">{{account}}</option> -->
+            <option>test</option>
+            {% endfor %}
+          </optgroup>
+        {% endfor %}
+      </select>
+    </div>
     {% endif %}
   </div>
   {% if g.user %}
@@ -21,8 +29,14 @@
 {% endblock %}
 
 {% block content %}
-    {% for post in posts %}
-    <h1>{{ post['title']}}</h1>
-    <h1>{{ post['amount']}}</h1>
-    {% endfor %}
+  {% for post in posts %}
+    <div class="post-container {% if post['type_of_transaction'] == 0 %}expense{% else %}income{% endif %}">
+      <h1>
+        {% if post['type_of_transaction'] == 0 %}E{% else %}I{% endif %}
+      </h1>
+      <h2>{{ post['title']}}</h2>
+      <h1>{{ post['amount']}} $</h1>
+      <h2>{{ post['created']}}</h2>
+    </div>
+  {% endfor %}
 {% endblock %}
