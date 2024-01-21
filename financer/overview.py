@@ -1,4 +1,13 @@
-from flask import Blueprint, flash, g, redirect, render_template, request, url_for
+from flask import (
+    Blueprint,
+    flash,
+    g,
+    redirect,
+    render_template,
+    request,
+    url_for,
+    make_response,
+)
 from werkzeug.exceptions import abort
 from financer.transactions import toes, tois, tots
 from financer.accounts import toa
@@ -18,15 +27,16 @@ def index():
     accounts = []
 
     if user_id:
-        posts = db.execute(
-            "SELECT p.id, title, type_of_transaction, created, author_id, description_of_transaction, amount"
-            " FROM logs p JOIN user u ON p.author_id = u.id"
-            " WHERE u.id = ?"
-            " ORDER BY created DESC",
-            (user_id,),
-        ).fetchall()
-        accounts = get_accounts(db, user_id)
-    return render_template("overview/index.html", posts=posts, accounts=accounts)
+        posts = get_posts(db, user_id)
+        accounts = get_accounts(db, user_id, sort=True)
+    print(accounts)
+    response = make_response(
+        render_template("overview/index.html", posts=posts, accounts=accounts)
+    )
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 
 @bp.route("/create", methods=("GET", "POST"))
@@ -60,8 +70,9 @@ def create():
                 comments,
                 account_to_be_modified,
             )
+            posts = get_posts(get_db(), g.user["id"])
             return render_template(
-                "overview/index.html", posts=[], accounts=accounts
+                "overview/index.html", accounts=accounts, posts=posts
             )
     accounts = get_accounts(get_db(), g.user["id"])
     return render_template(
@@ -69,7 +80,7 @@ def create():
     )
 
 
-def get_accounts(db, user_id):
+def get_accounts(db, user_id, sort=False):
     query = """SELECT id, name_of_account, balance, type_of_account
             FROM account
             WHERE user_id = ?"""
@@ -86,10 +97,12 @@ def get_accounts(db, user_id):
         }
         for account in accounts
     ]
+    if sorted:
+        # accounts = sorted(accounts, key=lambda d: d["type_of_account"])
+        accounts = group_by_account_type(accounts)
     return accounts
 
 
-Copy code
 def add_log_to_db(
     db,
     user,
@@ -100,29 +113,63 @@ def add_log_to_db(
     comments,
     account_to_be_modified,
 ):
-    add_log_query = "INSERT into logs (author_id, title, type_of_transaction, amount, description_of_transaction, comments) VALUES (?,?,?,?,?,?)"
-    transaction = db.execute(
-        add_log_query,
-        (
-            g.user["id"],
-            title,
-            type_of_transaction,
-            amount,
-            description_of_transaction,
-            comments,
-        ),
-    )
-
+    try:
+        add_log_query = "INSERT into logs (author_id, title, type_of_transaction, amount, description_of_transaction, comments) VALUES (?,?,?,?,?,?)"
+        transaction = db.execute(
+            add_log_query,
+            (
+                g.user["id"],
+                title,
+                type_of_transaction,
+                amount,
+                description_of_transaction,
+                comments,
+            ),
+        )
+    except Exception as e:
+        print(f"There was an error adding the log to the database: {str(e)}")
+        db.rollback()
+        return None
     # Update account balance
-    affect_account_query = "UPDATE account SET balance = balance + ? WHERE id = ?"
-    affect_account_transaction = db.execute(
-        affect_account_query, (amount, account_to_be_modified)
-    )
-
+    try:
+        affect_account_query = (
+            "UPDATE account SET balance = balance + ? WHERE name_of_account = ?"
+        )
+        affect_account_transaction = db.execute(
+            affect_account_query, (amount, account_to_be_modified)
+        )
+    except Exception as e:
+        print(f"Error in updating the account amount {str(e)}")
+        db.rollback()
+        return None
     # Fetch the updated account information after the balance update
-    accounts = get_accounts(db, g.user["id"])
 
     # Commit changes to the database
     db.commit()
+    accounts = get_accounts(db, g.user["id"])
 
     return accounts
+
+
+def get_posts(db, user_id):
+    QUERY = """ SELECT p.id, title, type_of_transaction, created, author_id, description_of_transaction, amount
+             FROM logs p JOIN user u ON p.author_id = u.id
+             WHERE u.id = ?
+             ORDER BY created DESC"""
+
+    return db.execute(
+        QUERY,
+        (user_id,),
+    ).fetchall()
+
+
+def group_by_account_type(list_of_dicts):
+    res = {}
+    for elem in list_of_dicts:
+        key, val = list(elem.keys()), list(elem.values())
+        index_of_type = key.index("type_of_account")
+        if val[index_of_type] in res:
+            res[val[index_of_type]].append(elem)
+        else:
+            res[val[index_of_type]] = [elem]
+    return res
