@@ -9,13 +9,14 @@
       <select name="account_selection" class="accounts_selector">
         {% for type_of_account in accounts %}
           <optgroup label="{{ type_of_account }}">
-            <option>test1</option>
-            {% for account in accounts['type_of_account'] %}
-            <!-- <option value="{{account['name_of_account']}}">{{account}}</option> -->
-            <option>test</option>
+            {% for account in accounts[type_of_account] %}
+            <option value="{{account[name_of_account]}}">{{account['name_of_account']}} : ${{account['balance']}}</option>
             {% endfor %}
           </optgroup>
-        {% endfor %}
+          {% endfor %}
+          <optgroup label="Add new account">
+            <option value="new_account">+</option>
+          </optgroup>
       </select>
     </div>
     {% endif %}
