@@ -29,7 +29,6 @@ def index():
     if user_id:
         posts = get_posts(db, user_id)
         accounts = get_accounts(db, user_id, sort=True)
-    print(accounts)
     response = make_response(
         render_template("overview/index.html", posts=posts, accounts=accounts)
     )
