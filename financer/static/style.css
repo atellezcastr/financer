@@ -132,6 +132,18 @@ div.accounts{
     justify-content: space-evenly;
     padding-top: 1%;
 }
+.actions{
+    display: flex;
+    justify-content: space-between;
+}
+.action{
+    border: 1px solid;
+    text-decoration: none;
+}
+div.option_panel{
+    display: flex;
+    align-items: center;
+}
 
 div.post-container {
     display: flex;

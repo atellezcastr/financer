@@ -22,7 +22,13 @@
     {% endif %}
   </div>
   {% if g.user %}
-    <a class="action" href="{{ url_for('overview.create') }}">New</a>
+  <div class="actions">
+    <a class="action" href="{{ url_for('overview.create') }}">+ New Entry</a>
+    <div class="option_panel">
+      <input type="checkbox" id="subtotal" name="subtotal" value="subtotal">
+      <label for="subtotal">Subtotals</label>
+    </div>
+  </div>
   {% else %}
     <h1> You are not registered</h1>
 
