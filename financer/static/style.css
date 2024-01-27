@@ -161,3 +161,24 @@ div.post-container.income {
     border-color: #5386E4;
     background-color: rgba(0, 0, 255, 0.1);
 }
+.unauthorized_main{
+    display: flex;
+    justify-content: center;
+}
+.unauthorized_main h1 {
+    font-family: cursive;
+    padding: 1rem;
+}
+/* form.login_div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: space-around;
+    width: 30%;
+} */
+
+div.wrapper_container {
+    /* background-color: grey; */
+    /* display: flex; */
+    justify-content: space-around;
+}
