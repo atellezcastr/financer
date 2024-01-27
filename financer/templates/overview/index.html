@@ -6,7 +6,7 @@
     {% if g.user %}
     <div class="accounts">
       <h3>Your accounts: </h3>
-      <select name="account_selection" class="accounts_selector">
+      <select name="account_selection" class="accounts_selector" id="accounts_selector">
         {% for type_of_account in accounts %}
           <optgroup label="{{ type_of_account }}">
             {% for account in accounts[type_of_account] %}
@@ -46,7 +46,7 @@
 
     {% for post in posts %}
     <div class="post-container {% if post['type_of_transaction'] == 0 %}expense{% else %}income{% endif %}">
-      <h1>
+      <h1 id="tot">
         {% if post['type_of_transaction'] == 0 %}E{% else %}I{% endif %}
       </h1>
       <h2>{{ post['title']}}</h2>
@@ -62,22 +62,34 @@
       const container = document.getElementById('wrapper_container');
       const checkbox = document.querySelector("input[name=subtotal]");
       const subtotal_column = document.getElementById('optional-subtotal');
-    
+      
       const node = document.createElement('h2')
       const textNode = document.createTextNode('Test')
       node.appendChild(textNode)
       checkbox.addEventListener('change', function(val) {
         var logs = container.children
+        var chosen_options = document.getElementById('accounts_selector');
+        var amountText = chosen_options.options[chosen_options.selectedIndex].text;
+        var amount = parseFloat(amountText.split('$').pop());
         for (var i = 0; i < logs.length; i++) {
           var sub_log = logs[i]
-          // var sub_amount = sub_log.get
-          console.log(sub_log.children)
-
-          // TODO use this to calculate subtotal of the current sub_log
           if (this.checked){
-              var h2Element = document.createElement('h2')
-              h2Element.textContent += 'Test'
-              sub_log.appendChild(h2Element)
+            var sub_log_text = sub_log.innerHTML
+            var tempElement = document.createElement('div');
+            tempElement.innerHTML = sub_log_text;
+            var logAmountElement = tempElement.querySelector('#log-amount');
+            var logAmount = parseFloat(logAmountElement.textContent.trim());
+
+            // Log the extracted float
+            var totElement = tempElement.querySelector('#tot');
+            var type_of_transaction = totElement.textContent.trim();
+            var new_amount = type_of_transaction === 'E'? amount + logAmount: amount - logAmount;
+
+            var h2Element = document.createElement('h2')
+            h2Element.textContent += new_amount.toFixed(2).toString();
+            sub_log.appendChild(h2Element)
+
+            amount = new_amount;
               
             } else {
               sub_log.removeChild(sub_log.lastElementChild)
