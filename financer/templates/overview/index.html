@@ -5,7 +5,7 @@
     <h1>{% block title %}Overview{% endblock %}</h1>
     {% if g.user %}
     <div class="accounts">
-      <h3>Your accounts: </h3>
+      <h3>Your <a href="{{ url_for('account_management.index')}}">accounts</a>: </h3>
       <select name="account_selection" class="accounts_selector" id="accounts_selector">
         {% for type_of_account in accounts %}
           <optgroup label="{{ type_of_account }}">
@@ -15,12 +15,12 @@
           </optgroup>
           {% endfor %}
           <optgroup label="Add new account">
-            <option value="new_account">+</option>
+            <option value="new_account" id="newAccountOption">+</option>
           </optgroup>
           <optgroup label="View all the logs">
             <option value="general">General</option>
           </optgroup>
-      </select>
+        </select>
     </div>
     {% endif %}
   </div>
@@ -46,12 +46,12 @@
 
     {% for post in posts %}
     <div class="post-container {% if post['type_of_transaction'] == 0 %}expense{% else %}income{% endif %}">
+      <h2>{{ post['created']}}</h2>
+      <h2>{{ post['title']}}</h2>
+      <h1 id="log-amount">{{ post['amount']}} $</h1>
       <h1 id="tot">
         {% if post['type_of_transaction'] == 0 %}E{% else %}I{% endif %}
       </h1>
-      <h2>{{ post['title']}}</h2>
-      <h1 id="log-amount">{{ post['amount']}} $</h1>
-      <h2>{{ post['created']}}</h2>
       <!-- The last h2 will be added dynamically-->
     </div>
     {% endfor %}
@@ -62,7 +62,9 @@
       const container = document.getElementById('wrapper_container');
       const checkbox = document.querySelector("input[name=subtotal]");
       const subtotal_column = document.getElementById('optional-subtotal');
+      const accountsSelector = document.getElementById('accounts_selector');
       
+
       const node = document.createElement('h2')
       const textNode = document.createTextNode('Test')
       node.appendChild(textNode)
@@ -95,7 +97,16 @@
               sub_log.removeChild(sub_log.lastElementChild)
           }
         }
-      })
+      });
+      accountsSelector.addEventListener('change', function () {
+            var selectedOption = accountsSelector.options[accountsSelector.selectedIndex];
+
+            if (selectedOption.value === 'new_account') {
+                // Redirect to the account create page
+                window.location.href = "{{ url_for('account_management.create') }}";
+                // console.log('We are here')
+            }
+        });  
     })
   </script>
     
