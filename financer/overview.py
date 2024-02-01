@@ -15,6 +15,8 @@ from financer.accounts import toa
 from financer.auth import login_required
 from financer.db import get_db
 
+import datetime
+
 bp = Blueprint("overview", __name__)
 
 
@@ -156,10 +158,25 @@ def get_posts(db, user_id):
              WHERE u.id = ?
              ORDER BY created DESC"""
 
-    return db.execute(
+    posts = db.execute(
         QUERY,
         (user_id,),
     ).fetchall()
+
+    date_input_format = "%y-%m-%d %H:%M:%S"
+    date_output_format = "%a %d %b %Y, %I:%M%p"
+
+    new_posts = [
+        {
+            "title": post["title"],
+            "type_of_transaction": post["type_of_transaction"],
+            "amount": post["amount"],
+            "created": post["created"].strftime(date_output_format),
+            "description_of_transaction": post["description_of_transaction"],
+        }
+        for post in posts
+    ]
+    return new_posts
 
 
 def group_by_account_type(list_of_dicts):
