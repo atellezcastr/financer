@@ -32,6 +32,10 @@ def create_app(test_config=None):
     from . import overview
 
     app.register_blueprint(overview.bp)
+
+    from . import accounts
+
+    app.register_blueprint(accounts.bp, url_prefix="/accounts")
     app.add_url_rule("/", endpoint="index")
     return app
 
