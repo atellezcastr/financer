@@ -6,4 +6,24 @@
 
 {% block content %}
 <a>This is a placeholder for the create page</a>
+<br/>
+<a>This is a placeholder for the create page</a>
+<div id="create_account_form">
+  <form method="post" id="account_create_form">
+    <input type="radio" id="checkings_create_selector" value="0" name="type_of_account" required>
+    <label for="checkings_create_selector">Checkings</label>
+    <input type="radio" id="savings_create_selector" value="1" name="type_of_account" required>
+    <label for="savings_create_selector">Savings</label>
+    <input type="radio" id="mutualfunds_create_selector" value="2" name="type_of_account" required>
+    <label for="mutualfunds_create_selector">Mutual Funds</label>
+    
+    <br/>
+    <label for="title">Title</label>
+    <input name="title" id="title" value="{{ request.form['title'] }}" required>
+    <br/>
+    
+    <label for="initial_amount">Initial amount</label>
+    <input name="initial_amount", type="number" min="0" placeholder="e.g. 1.24" value="{{ request.form['amount'] }}"/>
+  </form>
+</div>
 {% endblock %}
