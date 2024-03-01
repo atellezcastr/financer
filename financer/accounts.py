@@ -10,9 +10,9 @@ from flask import (
 )
 
 from financer.auth import login_required
-from financer.db import get_db
+from financer.db import get_db, get_accounts
 
-bp = Blueprint("account_management", __name__, template_folder="accounts")
+bp = Blueprint("accounts", __name__, template_folder="accounts")
 
 toa = {0: "Checkings", 1: "Savings", 2: "Joint"}
 
@@ -20,7 +20,9 @@ toa = {0: "Checkings", 1: "Savings", 2: "Joint"}
 @bp.route("/index", methods=["GET"])
 @login_required
 def index():
-    return render_template("accounts/index.html")
+    user_id = g.user["id"]
+    accounts = get_accounts(get_db(), user_id, sort=True)
+    return render_template("accounts/index.html", accounts=accounts)
 
 
 @bp.route("/create", methods=("GET", "POST"))
