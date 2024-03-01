@@ -1,9 +1,20 @@
 {% extends 'base.html' %}
 
 {% block header %}
+<div class="accounts_header">
   <h1>{% block title %}Accounts overview{% endblock %}</h1>
+  <a href="{{ url_for('accounts.create')}}">Add new account</a>
+</div>
 {% endblock %}
 
 {% block content %}
-<a>This is a placeholder for the overview page of accounts</a>
+  {% for type_of_account in accounts %}
+    <h1>{{type_of_account}}</h1>
+    {% for account in accounts[type_of_account] %}
+      <div>
+        <h3> {{account['name_of_account']}}</h3>
+        <h3> {{account['balance']}}</h3>
+      </div>
+    {% endfor %}
+  {% endfor %}
 {% endblock %}
