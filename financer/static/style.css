@@ -121,17 +121,25 @@ input[type=submit] {
     align-self: start;
     min-width: 10em;
 }
-div.accounts_header{
+div.overview_header{
     display:flex;
     flex-direction: row;
     justify-content: space-between;
 }
-div.accounts{
+div.accounts_header{
+    display:flex;
+    justify-content: space-between;
+}
+div.accounts_header > a {
+    margin: 1.5rem 1rem 1rem 1rem;
+}
+/* div.accounts_selector_div{
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
     padding-top: 1%;
-}
+} */
+/* TODO see what works best for this case */
 .actions{
     display: flex;
     justify-content: space-between;
@@ -181,4 +189,7 @@ div.wrapper_container {
     /* background-color: grey; */
     /* display: flex; */
     justify-content: space-around;
+}
+div.create_account_form {
+    display: flex;
 }
