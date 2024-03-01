@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <div class="accounts_header">
+  <div class="overview_header">
     <h1>{% block title %}Overview{% endblock %}</h1>
     {% if g.user %}
-    <div class="accounts">
-      <h3>Your <a href="{{ url_for('account_management.index')}}">accounts</a>: </h3>
+    <div class="accounts_selector_div">
+      <h3>Your <a href="{{ url_for('accounts.index')}}">accounts</a>: </h3>
       <select name="account_selection" class="accounts_selector" id="accounts_selector">
         {% for type_of_account in accounts %}
           <optgroup label="{{ type_of_account }}">
@@ -103,7 +103,7 @@
 
             if (selectedOption.value === 'new_account') {
                 // Redirect to the account create page
-                window.location.href = "{{ url_for('account_management.create') }}";
+                window.location.href = "{{ url_for('accounts.create') }}";
                 // console.log('We are here')
             }
         });  
